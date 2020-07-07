@@ -9,6 +9,6 @@ class MoviesRemoteDataSource(
     private val key: String
 ): MoviesDataSource {
     override fun getMovies(): List<Movie> = api.getMovies(key = key)
-    override fun getMovie(id: Int): Movie = api.getMovieDetailed(id = id, key = key)
-
+    override fun getMovie(id: Int): Movie = api.getMovieDetailed(key = key, id = id)
+    override fun searchMovie(text: String) = api.search(key = key, text = text)
 }
