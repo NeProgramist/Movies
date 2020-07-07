@@ -1,6 +1,6 @@
-package com.example.movies.data.repository
+package com.example.movies.domain.repository
 
-import com.example.movies.data.model.Movie
+import com.example.movies.domain.model.Movie
 
 interface MoviesRepository {
     fun getMovies(): List<Movie>

@@ -1,4 +1,4 @@
-package com.example.movies.data.model
+package com.example.movies.domain.model
 
 data class Result(
     val page: Int,
