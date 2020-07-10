@@ -20,13 +20,13 @@ interface MoviesApi {
     fun getMovieDetailed(
         @Query("api_key") key: String,
         @Path("movie_id") id: Int
-    ): Movie
+    ): Call<Movie>
 
     @GET("search/movie")
     fun search(
         @Query("api_key") key: String,
         @Query("query") text: String
-    ): List<Movie>
+    ): Call<MoviesList>
 
     companion object Factory {
         operator fun invoke(): MoviesApi {

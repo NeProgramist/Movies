@@ -8,12 +8,20 @@ import com.example.movies.domain.model.MoviesList
 class MoviesRepositoryImpl(
     private val remoteDataSource: MoviesDataSource
 ): MoviesRepository {
-    override fun getMovies(onSuccess: (Result<MoviesList>) -> Unit, onError: (Throwable) -> Unit) =
-        remoteDataSource.getMovies(onSuccess, onError)
+    override fun getMovies(
+        onSuccess: (Result<MoviesList>) -> Unit,
+        onError: (Throwable) -> Unit
+    ) = remoteDataSource.getMovies(onSuccess, onError)
 
+    override fun getMovie(
+        id: Int,
+        onSuccess: (Result<Movie>) -> Unit,
+        onError: (Throwable) -> Unit
+    ) = remoteDataSource.getMovie(id, onSuccess, onError)
 
-    override fun getMovie(id: Int): Result<Movie> = remoteDataSource.getMovie(id = id)
-
-    override fun search(text: String): Result<List<Movie>> = remoteDataSource.searchMovie(text = text)
-
+    override fun search(
+        text: String,
+        onSuccess: (Result<MoviesList>) -> Unit,
+        onError: (Throwable) -> Unit
+    ) = remoteDataSource.searchMovie(text, onSuccess, onError)
 }

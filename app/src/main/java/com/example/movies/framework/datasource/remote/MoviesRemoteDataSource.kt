@@ -24,25 +24,39 @@ class MoviesRemoteDataSource(
 
             override fun onResponse(call: Call<MoviesList>, response: Response<MoviesList>) {
                 if (response.isSuccessful) response.body()?.let { onSuccess(Result.success(it)) }
-                else onSuccess(Result.error(Error("Troubles with response")))
+                else onSuccess(Result.error(Error("Troubles with getMovies response")))
+            }
+        })
+    }
 
+    override fun getMovie(id: Int, onSuccess: (Result<Movie>) -> Unit, onError: (Throwable) -> Unit) {
+        val call = api.getMovieDetailed(key = key, id = id)
+
+        call.enqueue(object : Callback<Movie> {
+            override fun onFailure(call: Call<Movie>, t: Throwable) {
+                onError(t)
             }
 
+            override fun onResponse(call: Call<Movie>, response: Response<Movie>) {
+                if (response.isSuccessful) response.body()?.let { onSuccess(Result.success(it)) }
+                else onSuccess(Result.error(Error("Troubles with getMovie response")))
+            }
         })
+    }
 
+    override fun searchMovie(text: String, onSuccess: (Result<MoviesList>) -> Unit, onError: (Throwable) -> Unit) {
+        val call = api.search(key = key, text = text)
+
+        call.enqueue(object : Callback<MoviesList> {
+            override fun onFailure(call: Call<MoviesList>, t: Throwable) {
+                onError(t)
+            }
+
+            override fun onResponse(call: Call<MoviesList>, response: Response<MoviesList>) {
+                if (response.isSuccessful) response.body()?.let { onSuccess(Result.success(it)) }
+                else onSuccess(Result.error(Error("Troubles with searchMovie response")))
+            }
+        })
     }
-    override fun getMovie(id: Int): Result<Movie> {
-        return try {
-            Result.success(api.getMovieDetailed(key = key, id = id))
-        } catch (e: Error) {
-            Result.error(e)
-        }
-    }
-    override fun searchMovie(text: String): Result<List<Movie>> {
-        return try {
-            Result.success(api.search(key = key, text = text))
-        } catch (e : Error) {
-            Result.error(e)
-        }
-    }
+
 }

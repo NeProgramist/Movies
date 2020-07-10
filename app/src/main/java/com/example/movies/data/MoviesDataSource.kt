@@ -5,7 +5,20 @@ import com.example.movies.common.Result
 import com.example.movies.domain.model.MoviesList
 
 interface MoviesDataSource {
-    fun getMovies(onSuccess: (Result<MoviesList>) -> Unit, onError: (Throwable) -> Unit)
-    fun getMovie(id: Int): Result<Movie>
-    fun searchMovie(text: String): Result<List<Movie>>
+    fun getMovies(
+        onSuccess: (Result<MoviesList>) -> Unit,
+        onError: (Throwable) -> Unit
+    )
+
+    fun getMovie(
+        id: Int,
+        onSuccess: (Result<Movie>) -> Unit,
+        onError: (Throwable) -> Unit
+    )
+
+    fun searchMovie(
+        text: String,
+        onSuccess: (Result<MoviesList>) -> Unit,
+        onError: (Throwable) -> Unit
+    )
 }

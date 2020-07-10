@@ -6,6 +6,6 @@ import com.example.movies.domain.model.MoviesList
 
 interface MoviesRepository {
     fun getMovies(onSuccess: (Result<MoviesList>) -> Unit, onError: (Throwable) -> Unit)
-    fun getMovie(id: Int): Result<Movie>
-    fun search(text: String): Result<List<Movie>>
+    fun getMovie(id: Int, onSuccess: (Result<Movie>) -> Unit, onError: (Throwable) -> Unit)
+    fun search(text: String, onSuccess: (Result<MoviesList>) -> Unit, onError: (Throwable) -> Unit)
 }

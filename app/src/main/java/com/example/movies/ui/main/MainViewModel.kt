@@ -19,31 +19,28 @@ import kotlinx.coroutines.launch
 class MainViewModel: ViewModel() {
     val movies = MutableLiveData<Result<MoviesList>>()
 
-    val searchedMovie = MutableLiveData<List<Movie>>()
+    val searchedMovie = MutableLiveData<Result<MoviesList>>()
 
     fun showMovieList() {
         movies.value = Result.loading()
-        this.viewModelScope.launch(Dispatchers.IO) {
-            val result = GetMoviesUseCase(MoviesRepositoryImpl(
-                MoviesRemoteDataSource(MoviesApi(), "b0d4f703c67f14464200a9c01a4ba190"))
-            )(
-                onSuccess = { movies.value = it },
-                onError = { Log.e("Server error", "", it)}
-            )
-        }
+
+        GetMoviesUseCase(MoviesRepositoryImpl(
+            MoviesRemoteDataSource(MoviesApi(), "b0d4f703c67f14464200a9c01a4ba190"))
+        )(
+            onSuccess = { movies.value = it },
+            onError = { Log.e("Server error", "", it) }
+        )
     }
 
-    fun showMovie() {
+    fun searchMovies(text: String) {
+        searchedMovie.value = Result.loading()
 
-    }
-
-    fun searchMovie(text: String) {
-//        searchedMovie.value = Result.loading()
-//        this.viewModelScope.launch(Dispatchers.IO) {
-//            val result = SearchMoviesUseCase(
-//                MoviesRepositoryImpl(MoviesRemoteDataSource(MoviesApi(), "adsfasdf"))
-//            )(text)
-//            searchedMovie.value = result
-//        }
+        SearchMoviesUseCase(MoviesRepositoryImpl(
+            MoviesRemoteDataSource(MoviesApi(), "b0d4f703c67f14464200a9c01a4ba190"))
+        )(
+            text,
+            onSuccess = { searchedMovie.value = it },
+            onError = { Log.e("Server error", "", it) }
+        )
     }
 }
