@@ -1,6 +1,7 @@
 package com.example.movies.framework.datasource.remote
 
 import com.example.movies.domain.model.Movie
+import com.example.movies.domain.model.MoviesList
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -13,7 +14,7 @@ interface MoviesApi {
     @GET("trending/movies/day")
     fun getMovies(
         @Query("api_key") key: String
-    ): List<Movie>
+    ): Call<MoviesList>
 
     @GET("movie/{id}")
     fun getMovieDetailed(
@@ -31,7 +32,7 @@ interface MoviesApi {
         operator fun invoke(): MoviesApi {
             val retrofit = Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl("api.themoviedb.org/3/")
+                .baseUrl("https://api.themoviedb.org/3/")
                 .build()
 
             return retrofit.create(MoviesApi::class.java);
