@@ -1,12 +1,14 @@
-/*
 package com.example.movies.ui.main
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.movies.R
 import com.example.movies.domain.model.Movie
+import org.w3c.dom.Text
 
 class MoviesAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var movies = ArrayList<Movie>()
@@ -32,7 +34,13 @@ class MoviesAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     class MovieViewHolder(item: View): RecyclerView.ViewHolder(item) {
-        fun bind(item: Movie) {
+        private val posterId = item.findViewById<ImageView>(R.id.poster)
+        private val nameId = item.findViewById<TextView>(R.id.movie_name)
+        private val description = item.findViewById<TextView>(R.id.movie_description)
+
+        fun bind(movie: Movie) {
+            nameId.text = movie.title
+            description.text = movie.overview
         }
     }
-}*/
+}

@@ -37,5 +37,6 @@ interface MoviesApi {
 
             return retrofit.create(MoviesApi::class.java);
         }
+
     }
 }

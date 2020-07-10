@@ -4,11 +4,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.movies.R
-import com.example.movies.domain.model.Movie
 import com.example.movies.common.Result
 import com.example.movies.common.Status
 import com.example.movies.domain.model.MoviesList
@@ -17,10 +17,16 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity() {
 
     private lateinit var mainViewModel: MainViewModel
+    private lateinit var moviesAdapter: MoviesAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        moviesAdapter = MoviesAdapter()
+        movies_rv.adapter = moviesAdapter
+        movies_rv.layoutManager = LinearLayoutManager(applicationContext, RecyclerView.VERTICAL, false)
+
 
         mainViewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         mainViewModel.movies.observe(this, moviesObserver)
@@ -43,12 +49,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val moviesObserver = Observer<Result<MoviesList>> {
-        if (it.status == Status.SUCCESS) test.text = it.data?.results.toString()
+        if (it.status == Status.SUCCESS) moviesAdapter.setupMovies(it.data?.results!!)
         else test.text = it.error?.message
     }
 
     private val searchedMoviesObserver = Observer<Result<MoviesList>> {
-        if (it.status == Status.SUCCESS) test.text = it.data?.results.toString()
+        if (it.status == Status.SUCCESS) moviesAdapter.setupMovies(it.data?.results!!)
         else test.text = it.error?.message
     }
 }
