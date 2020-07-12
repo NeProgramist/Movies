@@ -2,32 +2,72 @@ package com.example.movies.framework.datasource.remote
 
 import com.example.movies.common.*
 import com.example.movies.data.MoviesDataSource
+import com.example.movies.domain.model.DetailedMovie
 import com.example.movies.domain.model.Movie
-import java.lang.Error
+import com.example.movies.domain.model.MoviesList
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import kotlin.Error
 
 class MoviesRemoteDataSource(
     private val api: MoviesApi,
     private val key: String
 ): MoviesDataSource {
-    override fun getMovies(): Result<List<Movie>> {
-        return try {
-            Result.success(api.getMovies(key = key))
-        } catch(e: Error) {
-            Result.error(e)
-        }
+
+    override suspend fun getMovies(
+        onSuccess: (Result<MoviesList>) -> Unit,
+        onError: (Throwable) -> Unit
+    ) {
+        val call = api.getMovies(key = key)
+
+        call.enqueue(object : Callback<MoviesList> {
+            override fun onFailure(call: Call<MoviesList>, t: Throwable) {
+                onError(t)
+            }
+
+            override fun onResponse(call: Call<MoviesList>, response: Response<MoviesList>) {
+                if (response.isSuccessful) response.body()?.let { onSuccess(Result.success(it)) }
+                else onSuccess(Result.error(Error("Troubles with getMovies response")))
+            }
+        })
     }
-    override fun getMovie(id: Int): Result<Movie> {
-        return try {
-            Result.success(api.getMovieDetailed(key = key, id = id))
-        } catch (e: Error) {
-            Result.error(e)
-        }
+
+    override suspend fun getMovie(
+        id: Int,
+        onSuccess: (Result<DetailedMovie>) -> Unit,
+        onError: (Throwable) -> Unit
+    ) {
+        val call = api.getMovieDetailed(key = key, id = id)
+
+        call.enqueue(object : Callback<DetailedMovie> {
+            override fun onFailure(call: Call<DetailedMovie>, t: Throwable) {
+                onError(t)
+            }
+
+            override fun onResponse(call: Call<DetailedMovie>, response: Response<DetailedMovie>) {
+                if (response.isSuccessful) response.body()?.let { onSuccess(Result.success(it)) }
+                else onSuccess(Result.error(Error("Troubles with getMovie response")))
+            }
+        })
     }
-    override fun searchMovie(text: String): Result<List<Movie>> {
-        return try {
-            Result.success(api.search(key = key, text = text))
-        } catch (e : Error) {
-            Result.error(e)
-        }
+
+    override suspend fun searchMovie(
+        text: String,
+        onSuccess: (Result<MoviesList>) -> Unit,
+        onError: (Throwable) -> Unit) {
+        val call = api.search(key = key, text = text)
+
+        call.enqueue(object : Callback<MoviesList> {
+            override fun onFailure(call: Call<MoviesList>, t: Throwable) {
+                onError(t)
+            }
+
+            override fun onResponse(call: Call<MoviesList>, response: Response<MoviesList>) {
+                if (response.isSuccessful) response.body()?.let { onSuccess(Result.success(it)) }
+                else onSuccess(Result.error(Error("Troubles with searchMovie response")))
+            }
+        })
     }
+
 }

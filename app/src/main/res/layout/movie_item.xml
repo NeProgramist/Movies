@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/poster"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/no_poster_text" />
+
+    <TextView
+        android:id="@+id/movie_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minLines = "2"
+        android:maxLines = "2"/>
+
+    <TextView
+        android:id="@+id/movie_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minLines = "0"
+        android:maxLines = "3" />
+
+</LinearLayout>

@@ -1,7 +1,7 @@
 package com.example.movies.ui.detailed
 
-import androidx.lifecycle.ViewModel
+import com.example.movies.ui.BaseViewModel
 
-class DetailedViewModel: ViewModel() {
+class DetailedViewModel: BaseViewModel() {
 
 }
