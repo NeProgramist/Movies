@@ -1,5 +1,6 @@
 package com.example.movies.ui.main
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,7 +9,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.movies.R
 import com.example.movies.domain.model.Movie
-import org.w3c.dom.Text
 
 class MoviesAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var movies = ArrayList<Movie>()
@@ -27,10 +27,15 @@ class MoviesAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
     }
 
-    fun setupMovies(data: List<Movie>) {
+    fun clear() {
+        val size = movies.size
         movies.clear()
-        movies.addAll(data)
-        notifyDataSetChanged()
+        notifyItemRangeRemoved(0, size)
+    }
+
+    fun insertMovie(data: Movie) {
+        movies.add(data)
+        notifyItemInserted(movies.size - 1)
     }
 
     class MovieViewHolder(item: View): RecyclerView.ViewHolder(item) {
@@ -39,7 +44,8 @@ class MoviesAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         private val description = item.findViewById<TextView>(R.id.movie_description)
 
         fun bind(movie: Movie) {
-            nameId.text = movie.title
+            posterId.setImageBitmap(movie.image)
+            nameId.text = if (movie.title.isNullOrEmpty()) movie.original_title else movie.title
             description.text = movie.overview
         }
     }

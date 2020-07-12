@@ -1,5 +1,6 @@
 package com.example.movies.framework.datasource.remote
 
+import com.example.movies.domain.model.DetailedMovie
 import com.example.movies.domain.model.Movie
 import com.example.movies.domain.model.MoviesList
 import retrofit2.Call
@@ -11,7 +12,7 @@ import retrofit2.http.Query
 
 interface MoviesApi {
 
-    @GET("trending/movies/day")
+    @GET("trending/movies/week")
     fun getMovies(
         @Query("api_key") key: String
     ): Call<MoviesList>
@@ -19,8 +20,9 @@ interface MoviesApi {
     @GET("movie/{id}")
     fun getMovieDetailed(
         @Query("api_key") key: String,
+        @Query("append_to_response") request: String = "credits",
         @Path("movie_id") id: Int
-    ): Call<Movie>
+    ): Call<DetailedMovie>
 
     @GET("search/movie")
     fun search(

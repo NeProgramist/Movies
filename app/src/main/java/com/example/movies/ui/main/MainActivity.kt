@@ -1,18 +1,29 @@
 package com.example.movies.ui.main
 
+import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
+import android.widget.GridLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.movies.R
+import com.example.movies.common.ImageSizes
 import com.example.movies.common.Result
 import com.example.movies.common.Status
+import com.example.movies.domain.model.Movie
 import com.example.movies.domain.model.MoviesList
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import java.io.InputStream
 
 class MainActivity : AppCompatActivity() {
 
@@ -25,20 +36,16 @@ class MainActivity : AppCompatActivity() {
 
         moviesAdapter = MoviesAdapter()
         movies_rv.adapter = moviesAdapter
-        movies_rv.layoutManager = LinearLayoutManager(applicationContext, RecyclerView.VERTICAL, false)
+        movies_rv.layoutManager = GridLayoutManager(this, 2)
 
 
         mainViewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         mainViewModel.movies.observe(this, moviesObserver)
-        mainViewModel.searchedMovie.observe(this, searchedMoviesObserver)
+        mainViewModel.searchedMovie.observe(this, moviesObserver)
 
         edtxt.addTextChangedListener(object: TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
+            override fun afterTextChanged(s: Editable?) {}
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (!s.isNullOrEmpty()) mainViewModel.searchMovies(s.toString())
                 else mainViewModel.showMovieList()
@@ -48,13 +55,29 @@ class MainActivity : AppCompatActivity() {
         mainViewModel.showMovieList()
     }
 
-    private val moviesObserver = Observer<Result<MoviesList>> {
-        if (it.status == Status.SUCCESS) moviesAdapter.setupMovies(it.data?.results!!)
-        else test.text = it.error?.message
-    }
-
-    private val searchedMoviesObserver = Observer<Result<MoviesList>> {
-        if (it.status == Status.SUCCESS) moviesAdapter.setupMovies(it.data?.results!!)
-        else test.text = it.error?.message
+    private val moviesObserver = Observer<Result<MoviesList>> { result ->
+        if (result.status == Status.SUCCESS) {
+            result.data?.let { moviesList ->
+                moviesAdapter.clear()
+                moviesList.results.forEach {
+                    if (!it.poster_path.isNullOrEmpty()) {
+                        mainViewModel.getImage(
+                            it.poster_path,
+                            ImageSizes.XLARGE,
+                            onSuccess = { r ->
+                                val bitmap = BitmapFactory.decodeStream(r.data)
+                                mainViewModel.viewModelScope.launch(Dispatchers.Main) {
+                                    if (r.status == Status.SUCCESS) it.image = bitmap
+                                    moviesAdapter.insertMovie(it)
+                                }
+                            },
+                            onError = { e -> Log.e("Server error", "", e) }
+                        )
+                    } else {
+//                        it.image =
+                }
+                }
+            }
+        }
     }
 }

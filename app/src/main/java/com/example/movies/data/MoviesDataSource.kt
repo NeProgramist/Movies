@@ -1,22 +1,22 @@
 package com.example.movies.data
 
-import com.example.movies.domain.model.Movie
 import com.example.movies.common.Result
+import com.example.movies.domain.model.DetailedMovie
 import com.example.movies.domain.model.MoviesList
 
 interface MoviesDataSource {
-    fun getMovies(
+    suspend fun getMovies(
         onSuccess: (Result<MoviesList>) -> Unit,
         onError: (Throwable) -> Unit
     )
 
-    fun getMovie(
+    suspend fun getMovie(
         id: Int,
-        onSuccess: (Result<Movie>) -> Unit,
+        onSuccess: (Result<DetailedMovie>) -> Unit,
         onError: (Throwable) -> Unit
     )
 
-    fun searchMovie(
+    suspend fun searchMovie(
         text: String,
         onSuccess: (Result<MoviesList>) -> Unit,
         onError: (Throwable) -> Unit

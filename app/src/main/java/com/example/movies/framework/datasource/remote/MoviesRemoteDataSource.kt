@@ -2,6 +2,7 @@ package com.example.movies.framework.datasource.remote
 
 import com.example.movies.common.*
 import com.example.movies.data.MoviesDataSource
+import com.example.movies.domain.model.DetailedMovie
 import com.example.movies.domain.model.Movie
 import com.example.movies.domain.model.MoviesList
 import retrofit2.Call
@@ -14,7 +15,10 @@ class MoviesRemoteDataSource(
     private val key: String
 ): MoviesDataSource {
 
-    override fun getMovies(onSuccess: (Result<MoviesList>) -> Unit, onError: (Throwable) -> Unit) {
+    override suspend fun getMovies(
+        onSuccess: (Result<MoviesList>) -> Unit,
+        onError: (Throwable) -> Unit
+    ) {
         val call = api.getMovies(key = key)
 
         call.enqueue(object : Callback<MoviesList> {
@@ -29,22 +33,29 @@ class MoviesRemoteDataSource(
         })
     }
 
-    override fun getMovie(id: Int, onSuccess: (Result<Movie>) -> Unit, onError: (Throwable) -> Unit) {
+    override suspend fun getMovie(
+        id: Int,
+        onSuccess: (Result<DetailedMovie>) -> Unit,
+        onError: (Throwable) -> Unit
+    ) {
         val call = api.getMovieDetailed(key = key, id = id)
 
-        call.enqueue(object : Callback<Movie> {
-            override fun onFailure(call: Call<Movie>, t: Throwable) {
+        call.enqueue(object : Callback<DetailedMovie> {
+            override fun onFailure(call: Call<DetailedMovie>, t: Throwable) {
                 onError(t)
             }
 
-            override fun onResponse(call: Call<Movie>, response: Response<Movie>) {
+            override fun onResponse(call: Call<DetailedMovie>, response: Response<DetailedMovie>) {
                 if (response.isSuccessful) response.body()?.let { onSuccess(Result.success(it)) }
                 else onSuccess(Result.error(Error("Troubles with getMovie response")))
             }
         })
     }
 
-    override fun searchMovie(text: String, onSuccess: (Result<MoviesList>) -> Unit, onError: (Throwable) -> Unit) {
+    override suspend fun searchMovie(
+        text: String,
+        onSuccess: (Result<MoviesList>) -> Unit,
+        onError: (Throwable) -> Unit) {
         val call = api.search(key = key, text = text)
 
         call.enqueue(object : Callback<MoviesList> {
