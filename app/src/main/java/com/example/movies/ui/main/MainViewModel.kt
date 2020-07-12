@@ -15,7 +15,6 @@ import kotlinx.coroutines.launch
 
 class MainViewModel: BaseViewModel() {
     val movies = MutableLiveData<Result<MoviesList>>()
-    val searchedMovie = MutableLiveData<Result<MoviesList>>()
 
     fun showMovieList() {
         movies.value = Result.loading()
@@ -23,7 +22,7 @@ class MainViewModel: BaseViewModel() {
         viewModelScope.launch {
             GetMoviesUseCase(
                 MoviesRepositoryImpl(
-                    MoviesRemoteDataSource(MoviesApi(), "b0d4f703c67f14464200a9c01a4ba190")
+                    MoviesRemoteDataSource(MoviesApi(), API_KEY)
                 )
             )(
                 onSuccess = { movies.value = it },
@@ -33,16 +32,16 @@ class MainViewModel: BaseViewModel() {
     }
 
     fun searchMovies(text: String) {
-        searchedMovie.value = Result.loading()
+        movies.value = Result.loading()
 
         viewModelScope.launch {
             SearchMoviesUseCase(
                 MoviesRepositoryImpl(
-                    MoviesRemoteDataSource(MoviesApi(), "b0d4f703c67f14464200a9c01a4ba190")
+                    MoviesRemoteDataSource(MoviesApi(), "API_KEY")
                 )
             )(
                 text,
-                onSuccess = { searchedMovie.value = it },
+                onSuccess = { movies.value = it },
                 onError = { Log.e("Server error", "", it) }
             )
         }

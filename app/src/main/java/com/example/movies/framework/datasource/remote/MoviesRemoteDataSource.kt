@@ -3,7 +3,6 @@ package com.example.movies.framework.datasource.remote
 import com.example.movies.common.*
 import com.example.movies.data.MoviesDataSource
 import com.example.movies.domain.model.DetailedMovie
-import com.example.movies.domain.model.Movie
 import com.example.movies.domain.model.MoviesList
 import retrofit2.Call
 import retrofit2.Callback
@@ -28,7 +27,7 @@ class MoviesRemoteDataSource(
 
             override fun onResponse(call: Call<MoviesList>, response: Response<MoviesList>) {
                 if (response.isSuccessful) response.body()?.let { onSuccess(Result.success(it)) }
-                else onSuccess(Result.error(Error("Troubles with getMovies response")))
+                else onSuccess(Result.error(Error("getMovies: ${response.errorBody()?.string()}")))
             }
         })
     }
@@ -47,7 +46,7 @@ class MoviesRemoteDataSource(
 
             override fun onResponse(call: Call<DetailedMovie>, response: Response<DetailedMovie>) {
                 if (response.isSuccessful) response.body()?.let { onSuccess(Result.success(it)) }
-                else onSuccess(Result.error(Error("Troubles with getMovie response")))
+                else onSuccess(Result.error(Error("getMovie: ${response.errorBody()?.string()}")))
             }
         })
     }
@@ -65,7 +64,7 @@ class MoviesRemoteDataSource(
 
             override fun onResponse(call: Call<MoviesList>, response: Response<MoviesList>) {
                 if (response.isSuccessful) response.body()?.let { onSuccess(Result.success(it)) }
-                else onSuccess(Result.error(Error("Troubles with searchMovie response")))
+                else onSuccess(Result.error(Error("search: ${response.errorBody()?.string()}")))
             }
         })
     }

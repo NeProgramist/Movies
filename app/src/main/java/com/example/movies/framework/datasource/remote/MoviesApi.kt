@@ -17,11 +17,11 @@ interface MoviesApi {
         @Query("api_key") key: String
     ): Call<MoviesList>
 
-    @GET("movie/{id}")
+    @GET("movie/{movie_id}")
     fun getMovieDetailed(
+        @Path("movie_id") id: Int,
         @Query("api_key") key: String,
-        @Query("append_to_response") request: String = "credits",
-        @Path("movie_id") id: Int
+        @Query("append_to_response") request: String = "credits"
     ): Call<DetailedMovie>
 
     @GET("search/movie")
