@@ -11,9 +11,10 @@ class MoviesRepositoryImpl(
     private val remoteDataSource: MoviesDataSource
 ): MoviesRepository {
     override suspend fun getMovies(
+        page: Int,
         onSuccess: (Result<MoviesList>) -> Unit,
         onError: (Throwable) -> Unit
-    ) = withContext(Dispatchers.IO) { remoteDataSource.getMovies(onSuccess, onError) }
+    ) = withContext(Dispatchers.IO) { remoteDataSource.getMovies(page, onSuccess, onError) }
 
     override suspend fun getMovie(
         id: Int,
@@ -22,8 +23,9 @@ class MoviesRepositoryImpl(
     ) = withContext(Dispatchers.IO) { remoteDataSource.getMovie(id, onSuccess, onError) }
 
     override suspend fun search(
+        page: Int,
         text: String,
         onSuccess: (Result<MoviesList>) -> Unit,
         onError: (Throwable) -> Unit
-    ) = withContext(Dispatchers.IO) { remoteDataSource.searchMovie(text, onSuccess, onError) }
+    ) = withContext(Dispatchers.IO) { remoteDataSource.searchMovie(page, text, onSuccess, onError) }
 }

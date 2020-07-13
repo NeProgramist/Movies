@@ -14,20 +14,22 @@ interface MoviesApi {
 
     @GET("trending/movies/week")
     fun getMovies(
-        @Query("api_key") key: String
+        @Query("api_key") key: String,
+        @Query("page") page: Int
     ): Call<MoviesList>
 
-    @GET("movie/{id}")
+    @GET("movie/{movie_id}")
     fun getMovieDetailed(
+        @Path("movie_id") id: Int,
         @Query("api_key") key: String,
-        @Query("append_to_response") request: String = "credits",
-        @Path("movie_id") id: Int
+        @Query("append_to_response") request: String = "credits"
     ): Call<DetailedMovie>
 
     @GET("search/movie")
     fun search(
         @Query("api_key") key: String,
-        @Query("query") text: String
+        @Query("query") text: String,
+        @Query("page") page: Int
     ): Call<MoviesList>
 
     companion object Factory {

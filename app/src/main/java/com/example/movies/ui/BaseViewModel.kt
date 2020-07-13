@@ -30,4 +30,9 @@ open class BaseViewModel: ViewModel() {
             )
         }
     }
+
+
+    companion object {
+        const val API_KEY = "b0d4f703c67f14464200a9c01a4ba190"
+    }
 }

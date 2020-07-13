@@ -6,6 +6,7 @@ import com.example.movies.domain.model.MoviesList
 
 interface MoviesDataSource {
     suspend fun getMovies(
+        page: Int,
         onSuccess: (Result<MoviesList>) -> Unit,
         onError: (Throwable) -> Unit
     )
@@ -17,6 +18,7 @@ interface MoviesDataSource {
     )
 
     suspend fun searchMovie(
+        page: Int,
         text: String,
         onSuccess: (Result<MoviesList>) -> Unit,
         onError: (Throwable) -> Unit

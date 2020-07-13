@@ -6,8 +6,9 @@ import com.example.movies.domain.repository.movies.MoviesRepository
 
 class SearchMoviesUseCase(private val repository: MoviesRepository) {
     suspend operator fun invoke(
+        page: Int,
         text: String,
         onSuccess: (Result<MoviesList>) -> Unit,
         onError: (Throwable) -> Unit
-    ) = repository.search(text, onSuccess, onError)
+    ) = repository.search(page, text, onSuccess, onError)
 }

@@ -8,4 +8,21 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="detailed">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="fontFamily">@font/roboto</item>
+        <item name="android:textSize">16dp</item>
+        <item name="android:textColor">#4F4F4F</item>
+        <item name="android:lineSpacingExtra">2dp</item>
+    </style>
+
+    <style name="detailed_title" parent="detailed">
+        <item name="fontFamily">@font/roboto_bold</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginBottom">5dp</item>
+        <item name="android:textSize">16dp</item>
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+    </style>
+
 </resources>
