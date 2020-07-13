@@ -7,10 +7,12 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import androidx.core.view.children
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.movies.R
 import com.example.movies.common.ImageSizes
 import com.example.movies.common.*
@@ -19,6 +21,7 @@ import com.example.movies.ui.detailed.DetailedActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class MainActivity : AppCompatActivity(), MoviesAdapter.OnItemClickListener {
 
@@ -32,6 +35,17 @@ class MainActivity : AppCompatActivity(), MoviesAdapter.OnItemClickListener {
         moviesAdapter = MoviesAdapter(this)
         movies_rv.adapter = moviesAdapter
         movies_rv.layoutManager = GridLayoutManager(this, 2)
+        val onScrollListener = object: RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val lastId = recyclerView.children.last().id
+                if (lastId >= mainViewModel.pagesLoaded*15) {
+                    mainViewModel.pagesLoaded = 2
+                    mainViewModel.showMovieList()
+                }
+            }
+        }
+        movies_rv.addOnScrollListener(onScrollListener)
 
         mainViewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         mainViewModel.movies.observe(this, moviesObserver)
@@ -51,25 +65,25 @@ class MainActivity : AppCompatActivity(), MoviesAdapter.OnItemClickListener {
     private val moviesObserver = Observer<Result<MoviesList>> { result ->
         if (result.status == Status.SUCCESS) {
             result.data?.let { moviesList ->
-                moviesAdapter.clear()
-                moviesList.results.forEach {
-                    if (!it.poster_path.isNullOrEmpty()) {
-                        mainViewModel.getImage(
-                            it.poster_path,
-                            ImageSizes.XLARGE,
-                            onSuccess = { r ->
-                                val bitmap = BitmapFactory.decodeStream(r.data)
-                                mainViewModel.viewModelScope.launch(Dispatchers.Main) {
-                                    if (r.status == Status.SUCCESS) it.image = bitmap
-                                    moviesAdapter.insertMovie(it)
-                                }
-                            },
-                            onError = { e -> Log.e("Server error", "", e) }
-                        )
-                    } else {
+                moviesAdapter.setupMovies(moviesList.results)
+                    moviesList.results.forEachIndexed { index, it ->
+                        if (!it.poster_path.isNullOrEmpty()) {
+                            mainViewModel.getImage(
+                                it.poster_path,
+                                ImageSizes.XLARGE,
+                                onSuccess = { r ->
+                                    mainViewModel.viewModelScope.launch(Dispatchers.Main) {
+                                        val bitmap = BitmapFactory.decodeStream(r.data)
+                                        if (r.status == Status.SUCCESS) it.image = bitmap
+                                        moviesAdapter.insertMovie(it, index)
+                                    }
+                                },
+                                onError = { e -> Log.e("Server error", "", e) }
+                            )
+                        } else {
 //                        it.image =
-                }
-                }
+                        }
+                    }
             }
         }
     }

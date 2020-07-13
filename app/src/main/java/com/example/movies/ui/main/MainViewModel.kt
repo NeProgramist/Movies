@@ -14,9 +14,10 @@ import com.example.movies.ui.BaseViewModel
 import kotlinx.coroutines.launch
 
 class MainViewModel: BaseViewModel() {
+    var pagesLoaded = 1
     val movies = MutableLiveData<Result<MoviesList>>()
 
-    fun showMovieList() {
+    fun showMovieList(page: Int) {
         movies.value = Result.loading()
 
         viewModelScope.launch {
@@ -25,6 +26,7 @@ class MainViewModel: BaseViewModel() {
                     MoviesRemoteDataSource(MoviesApi(), API_KEY)
                 )
             )(
+                page,
                 onSuccess = { movies.value = it },
                 onError = { Log.e("Server error", "", it) }
             )
@@ -33,11 +35,12 @@ class MainViewModel: BaseViewModel() {
 
     fun searchMovies(text: String) {
         movies.value = Result.loading()
+        Log.d("asdfasdf", "here")
 
         viewModelScope.launch {
             SearchMoviesUseCase(
                 MoviesRepositoryImpl(
-                    MoviesRemoteDataSource(MoviesApi(), "API_KEY")
+                    MoviesRemoteDataSource(MoviesApi(), API_KEY)
                 )
             )(
                 text,
@@ -45,5 +48,8 @@ class MainViewModel: BaseViewModel() {
                 onError = { Log.e("Server error", "", it) }
             )
         }
+    }
+
+    companion object {
     }
 }

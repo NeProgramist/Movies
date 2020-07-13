@@ -1,6 +1,5 @@
 package com.example.movies.ui.main
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,31 +24,33 @@ class MoviesAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is MovieViewHolder) {
-            holder.bind(movies[position])
+            holder.bind(movies[position], position)
         }
     }
 
-    fun clear() {
-        val size = movies.size
-        movies.clear()
-        notifyItemRangeRemoved(0, size)
+    fun insertMovie(data: Movie, position: Int) {
+        movies[position] = data
+        notifyItemChanged(position)
     }
 
-    fun insertMovie(data: Movie) {
-        movies.add(data)
-        notifyItemInserted(movies.size - 1)
+    fun setupMovies(data: List<Movie>) {
+        movies.clear()
+        movies.addAll(data)
+        notifyDataSetChanged()
     }
 
     inner class MovieViewHolder(
         private val item: View,
         private val onItemClick: OnItemClickListener
     ): RecyclerView.ViewHolder(item) {
-        private val posterId = item.findViewById<ImageView>(R.id.poster)
+        private val posterId = item.findViewById<ImageView>(R.id.img)
         private val nameId = item.findViewById<TextView>(R.id.movie_name)
         private val description = item.findViewById<TextView>(R.id.movie_description)
 
-        fun bind(movie: Movie) {
-            posterId.setImageBitmap(movie.image)
+        fun bind(movie: Movie, id: Int) {
+            if (movie.image != null) posterId.setImageBitmap(movie.image)
+            else posterId.setImageDrawable(item.context.getDrawable(R.drawable.ic_loading_error))
+            item.id = id
             nameId.text = if (movie.title.isNullOrEmpty()) movie.original_title else movie.title
             description.text = movie.overview
 
