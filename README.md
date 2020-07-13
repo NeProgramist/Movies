@@ -8,4 +8,4 @@ How should it work(my thoughts)? The app makes a request every time when user se
 - I can make pictures a bit worse, but it's temporary and on 10's request everything will be the same
 - I can delete photos, when they are unnecessary(but now I should make requests for every photo two or even more times)
 - Cache them as it's realized in Glide, Picasso
-- __Also I really want to hear your opinion on this kind of problem and how should it be fixed__
+- __Also I really want to hear your opinion on this kind of problem and how it should be fixed__
