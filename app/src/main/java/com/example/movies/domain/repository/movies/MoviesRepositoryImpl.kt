@@ -14,7 +14,7 @@ class MoviesRepositoryImpl(
         page: Int,
         onSuccess: (Result<MoviesList>) -> Unit,
         onError: (Throwable) -> Unit
-    ) = withContext(Dispatchers.IO) { remoteDataSource.getMovies(onSuccess, onError) }
+    ) = withContext(Dispatchers.IO) { remoteDataSource.getMovies(page, onSuccess, onError) }
 
     override suspend fun getMovie(
         id: Int,
@@ -27,5 +27,5 @@ class MoviesRepositoryImpl(
         text: String,
         onSuccess: (Result<MoviesList>) -> Unit,
         onError: (Throwable) -> Unit
-    ) = withContext(Dispatchers.IO) { remoteDataSource.searchMovie(text, onSuccess, onError) }
+    ) = withContext(Dispatchers.IO) { remoteDataSource.searchMovie(page, text, onSuccess, onError) }
 }

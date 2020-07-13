@@ -9,5 +9,5 @@ class GetMoviesUseCase(private val repository: MoviesRepository) {
         page: Int,
         onSuccess: (Result<MoviesList>) -> Unit,
         onError: (Throwable) -> Unit
-    ) = repository.getMovies(onSuccess, onError)
+    ) = repository.getMovies(page, onSuccess, onError)
 }

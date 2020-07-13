@@ -1,5 +1,6 @@
 package com.example.movies.ui.main
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,15 +29,21 @@ class MoviesAdapter(
         }
     }
 
+    fun clear() {
+        val size = movies.size
+        movies.clear()
+        notifyItemRangeRemoved(0, size)
+    }
+
     fun insertMovie(data: Movie, position: Int) {
         movies[position] = data
         notifyItemChanged(position)
     }
 
     fun setupMovies(data: List<Movie>) {
-        movies.clear()
+        val startIndex = movies.size - 1
         movies.addAll(data)
-        notifyDataSetChanged()
+        notifyItemRangeInserted(startIndex, data.size)
     }
 
     inner class MovieViewHolder(
@@ -48,10 +55,16 @@ class MoviesAdapter(
         private val description = item.findViewById<TextView>(R.id.movie_description)
 
         fun bind(movie: Movie, id: Int) {
+            item.id = id
+
             if (movie.image != null) posterId.setImageBitmap(movie.image)
             else posterId.setImageDrawable(item.context.getDrawable(R.drawable.ic_loading_error))
-            item.id = id
-            nameId.text = if (movie.title.isNullOrEmpty()) movie.original_title else movie.title
+
+            nameId.text =
+                if (!movie.original_title.isNullOrEmpty()) movie.original_title
+                else if (!movie.title.isNullOrEmpty()) movie.title
+                else "[No title]"
+
             description.text = movie.overview
 
             item.setOnClickListener {

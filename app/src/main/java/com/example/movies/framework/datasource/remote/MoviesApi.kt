@@ -14,7 +14,8 @@ interface MoviesApi {
 
     @GET("trending/movies/week")
     fun getMovies(
-        @Query("api_key") key: String
+        @Query("api_key") key: String,
+        @Query("page") page: Int
     ): Call<MoviesList>
 
     @GET("movie/{movie_id}")
@@ -27,7 +28,8 @@ interface MoviesApi {
     @GET("search/movie")
     fun search(
         @Query("api_key") key: String,
-        @Query("query") text: String
+        @Query("query") text: String,
+        @Query("page") page: Int
     ): Call<MoviesList>
 
     companion object Factory {

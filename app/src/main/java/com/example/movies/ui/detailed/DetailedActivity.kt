@@ -27,8 +27,12 @@ class DetailedActivity : AppCompatActivity() {
 
         id = intent.getIntExtra("id", -1)
         detailedViewModel = ViewModelProvider(this).get(DetailedViewModel::class.java)
-
         detailedViewModel.movie.observe(this, movieObserver)
+
+        back_button.setOnClickListener{
+            finish()
+        }
+
         detailedViewModel.showMovie(id)
     }
 
@@ -42,33 +46,38 @@ class DetailedActivity : AppCompatActivity() {
                         onSuccess = { r ->
                             val bitmap = BitmapFactory.decodeStream(r.data)
                             detailedViewModel.viewModelScope.launch(Dispatchers.Main) {
+                                Log.d("asdfasdf", r.status.toString())
                                 if (r.status == Status.SUCCESS) detailed_img.setImageBitmap(bitmap)
 
                                 detailed_title.text = it.title
                                 detailed_description.text = it.overview
-                                detailed_cast.text = it.credits.cast.fold("") { acc, cast ->
-                                    acc + cast.name
-                                }
 
+                                detailed_release_date.text = "Release date: ${it.release_date}"
+
+                                detailed_cast_title.text = "Cast:"
+                                detailed_cast.text = it.credits.cast.fold("") { acc, cast ->
+                                    "$acc, ${cast.name}"
+                                }.drop(2)
+
+                                detailed_directors_title.text = "Directors:"
                                 detailed_directors.text = it
                                     .credits
                                     .crew
                                     .filter { item -> item.job.contains("Director") }
-                                    .fold("") { acc, crew -> acc + crew.name }
+                                    .fold("") { acc, crew -> "$acc, ${crew.name}" }
+                                    .drop(2)
 
+                                detailed_genres_title.text = "Genres:"
                                 detailed_genres.text = it.genres.fold("") { acc, genre ->
-                                    acc + genre.name
-                                }
+                                    "$acc, ${genre.name}"
+                                }.drop(2)
                             }
                         },
                         onError = { e -> Log.e("Server error", "", e) }
                     )
-                } else {
-
                 }
             }
-        } else {
-
         }
     }
+
 }

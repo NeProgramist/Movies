@@ -15,10 +15,11 @@ class MoviesRemoteDataSource(
 ): MoviesDataSource {
 
     override suspend fun getMovies(
+        page: Int,
         onSuccess: (Result<MoviesList>) -> Unit,
         onError: (Throwable) -> Unit
     ) {
-        val call = api.getMovies(key = key)
+        val call = api.getMovies(key = key, page = page)
 
         call.enqueue(object : Callback<MoviesList> {
             override fun onFailure(call: Call<MoviesList>, t: Throwable) {
@@ -52,10 +53,11 @@ class MoviesRemoteDataSource(
     }
 
     override suspend fun searchMovie(
+        page: Int,
         text: String,
         onSuccess: (Result<MoviesList>) -> Unit,
         onError: (Throwable) -> Unit) {
-        val call = api.search(key = key, text = text)
+        val call = api.search(key = key, text = text, page = page)
 
         call.enqueue(object : Callback<MoviesList> {
             override fun onFailure(call: Call<MoviesList>, t: Throwable) {
